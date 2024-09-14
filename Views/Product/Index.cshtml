@@ -1,0 +1,86 @@
+﻿@using X.Web.PagedList
+
+
+
+ @model X.PagedList.IPagedList<Product>
+
+<div class="conainer">
+    <div class="row pt-4 pb-3">
+        <div class="col-6">
+            <h2>Product List</h2>
+        </div>
+        <div class="col-6 text-end">
+            <a asp-controller="Product" asp-action="Create" class="btn btn-primary">
+                <i class="bi bi-bookmark-plus"></i> New Product
+            </a>
+        </div>
+    </div>
+</div>
+
+<form asp-controller="Product" asp-action="Index" method="get" class="mb-4">
+    <div class="input-group">
+        <input type="text" name="search" value="@ViewBag.CurrentFilter" class="form-control" placeholder="Search" />
+        <button class="btn btn-primary" type="submit">
+            <i class="bi bi-search"></i> Search
+        </button>
+    </div>
+</form>
+
+<table class="table table-bordered table-striped">
+    <thead>
+        <tr>
+            <th>Product Name</th>
+            <th>Price</th>
+            <th>Quantity</th>
+            <th></th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var obj in Model)
+        {
+            <tr>
+                <td>@obj.ProductName</td>
+                <td>@obj.Price</td>
+                <td>@obj.Quantity</td>
+                <td>
+                    <div class="w-75 btn-group" role="group">
+                        <a class="btn btn-primary mx-2" asp-controller="Product" asp-action="Edit" asp-route-id="@obj.ProductId">
+                            <i class="bi bi-pencil-fill"></i> Edit
+                        </a>
+                        <a class="btn btn-danger mx-2" asp-controller="Product" asp-action="Delete" asp-route-id="@obj.ProductId">
+                            <i class="bi bi-trash3"></i> Delete
+                        </a>
+                    </div>
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>
+@* <div class="pagination-container">
+    @Html.PagedListPager(Model, page => Url.Action("Index", new { page }))
+</div> *@
+
+
+<div class="pagination-container">
+    <ul class="pagination">
+        @if (Model.PageCount > 1)
+        {
+            <li class="page-item @(Model.HasPreviousPage ? "" : "disabled")">
+                <a class="page-link" href="@Url.Action("Index", new { page = Model.PageNumber - 1 })" aria-label="Previous">
+                    <span aria-hidden="true">&laquo;</span>
+                </a>
+            </li>
+            @for (int i = 1; i <= Model.PageCount; i++)
+            {
+                <li class="page-item @(i == Model.PageNumber ? "active" : "")">
+                    <a class="page-link" href="@Url.Action("Index", new { page = i })">@i</a>
+                </li>
+            }
+            <li class="page-item @(Model.HasNextPage ? "" : "disabled")">
+                <a class="page-link" href="@Url.Action("Index", new { page = Model.PageNumber + 1 })" aria-label="Next">
+                    <span aria-hidden="true">&raquo;</span>
+                </a>
+            </li>
+        }
+    </ul>
+</div>
